@@ -4,36 +4,67 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-// Class for a chat client
+// A class for a chat client
 public class ChatClient {
 
-    private static Socket client;
-
-    public static void main(String[] args) {
+    private Socket s;
+    private Thread t;
+    // Constructor
+    public ChatClient(String address, int port) {
         try {
-            Socket s = new Socket("localhost",14001);
+            t = new ClientThread(address, port); // Declares a new client thread
+            s = new Socket(address, port);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Server connection could not be established.");
+        }
+    }
+    // Method to set up a BufferedReader to take input and PrintWriter to send output to server
+    public void run() {
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+            PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+            t.start(); // Starts thread to read output and print it to console
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            PrintWriter out = new PrintWriter(s.getOutputStream(),true);
-
-            BufferedReader user = new BufferedReader(new InputStreamReader(System.in));
-
-            while(true) {
-                String userInput = user.readLine();
+            while (true) {
+                String userInput = in.readLine();
                 out.println(userInput);
-                String back = in.readLine();
-                System.out.println(back);
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally {
+            System.out.println("IO error. Please try again.");
+        } finally {
             try {
-                client.close();
-            }
-            catch (Exception e) {
+                s.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Connection to server could not be closed.");
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                System.out.println("Connection to server could not be closed.");
             }
         }
+    }
+    // Method to establish default variable values and allow parameters to be passed through to alter these
+    public static void main(String[] args) {
+        String address = "localhost";
+        int port = 14001;
+        for (int i = 0; i < args.length - 1; i++) {
+            if (args[i].equals("-cca")) { // Request to ChatClient to bind to another IP address
+                address = args[i + 1];
+            } else {
+                System.out.println("Invalid address. Please try again.");
+            }
+            if (args[i].equals("-ccp")) { // Request to ChatClient to bind to another port
+                try {
+                    port = Integer.parseInt(args[i + 1]);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid port. Please try again.");
+                }
+            }
+        }
+        // Creates new instance of ChatClient with either the default values or new parameters entered
+        new ChatClient(address, port).run();
     }
 
 }

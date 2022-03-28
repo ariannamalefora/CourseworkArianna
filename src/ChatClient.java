@@ -5,7 +5,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 // A class for a chat client
-public class ChatClient {
+public class ChatClient extends Thread {
 
     private Socket s;
     private Thread t;
@@ -13,6 +13,7 @@ public class ChatClient {
     public ChatClient(String address, int port) {
         try {
             t = new ClientThread(address, port); // Declares a new client thread
+            t.start(); // Starts thread to read output and print it to console
             s = new Socket(address, port);
         } catch (IOException e) {
             e.printStackTrace();
@@ -24,7 +25,6 @@ public class ChatClient {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             PrintWriter out = new PrintWriter(s.getOutputStream(), true);
-            t.start(); // Starts thread to read output and print it to console
 
             while (true) {
                 String userInput = in.readLine();
@@ -48,7 +48,7 @@ public class ChatClient {
     // Method to establish default variable values and allow parameters to be passed through to alter these
     public static void main(String[] args) {
         String address = "localhost";
-        int port = 14001;
+        int port = 14003;
         for (int i = 0; i < args.length - 1; i++) {
             if (args[i].equals("-cca")) { // Request to ChatClient to bind to another IP address
                 address = args[i + 1];
@@ -64,7 +64,7 @@ public class ChatClient {
             }
         }
         // Creates new instance of ChatClient with either the default values or new parameters entered
-        new ChatClient(address, port).run();
+        new ChatClient(address, port).start();
     }
 
 }

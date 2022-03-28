@@ -11,7 +11,7 @@ public class ThreadCheck extends Thread {
         this.server = server;
     }
 
-    public void go() {
+    public void run() {
         try {
             while (true) {
                 String userInput = in.readLine();

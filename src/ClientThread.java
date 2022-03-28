@@ -17,7 +17,7 @@ public class ClientThread extends Thread {
         }
     }
 
-    public void go() {
+    public void run() {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 

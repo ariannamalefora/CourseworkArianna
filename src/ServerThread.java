@@ -16,7 +16,7 @@ public class ServerThread extends Thread {
         this.server = chatServer;
     }
 
-    public void go() {
+    public void run() {
         try {
             InputStreamReader inp = new InputStreamReader(s.getInputStream());
             BufferedReader in = new BufferedReader(inp);

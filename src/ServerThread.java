@@ -10,33 +10,30 @@ public class ServerThread extends Thread {
     PrintWriter out;
     private Socket s;
     private ChatServer server;
-
+    // Constructor
     public ServerThread(Socket client, ChatServer chatServer) {
         s = client;
         this.server = chatServer;
     }
-
+    // Method to set up a BufferedReader to take input and PrintWriter to send output to server
     public void run() {
         try {
             InputStreamReader inp = new InputStreamReader(s.getInputStream());
             BufferedReader in = new BufferedReader(inp);
             out = new PrintWriter(s.getOutputStream(), true);
-
             while (true) {
                 String userInput = in.readLine();
                 out.println(userInput);
                 server.sendAll(userInput); // Sends input to all clients
             }
         } catch (IOException e1) {
-            System.out.println("Disconnected");
+            System.out.println("The client disconnected.");
         }
     }
-
+    // Method to print string when called by ChatServer class
     public void printString(String Print) {
-        // Prints string when called by ChatServer class
         out.println(Print);
-        // used to force to print
-       out.flush();
+        out.flush();
     }
 
 }

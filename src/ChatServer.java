@@ -12,7 +12,7 @@ public class ChatServer extends Thread {
     private ArrayList<Thread> tList = new ArrayList<Thread>(); // Array list to store threads
     // Constructor
     public ChatServer(int port) {
-    this.port = port;
+        this.port = port;
     }
     // Method to check for server input and accept new client threads
     public void run() {
@@ -25,6 +25,8 @@ public class ChatServer extends Thread {
         try {
             Socket s;
             System.out.println("Server is ready");
+            Thread tt = new ThreadCheck(this);
+            tt.start();
             while (true) {
                 s = ss.accept();
                 t = new ServerThread(s, this);
@@ -38,7 +40,7 @@ public class ChatServer extends Thread {
     }
     // Method to establish default port value and allow a parameter to be passed through to alter this
     public static void main(String[] args) {
-        int port = 14003;
+        int port = 14006;
         for (int i = 0; i < args.length - 1; i++) {
             if (args[i].equals("-ccp")) { // Request to ChatClient to bind to another port
                 try {
@@ -50,7 +52,6 @@ public class ChatServer extends Thread {
                 System.out.println("Invalid input");
             }
         }
-
         // Starts server with either default port or new parameter entered
         ChatServer server = new ChatServer(port);
         server.start();

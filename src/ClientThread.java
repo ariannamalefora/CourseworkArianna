@@ -16,11 +16,10 @@ public class ClientThread extends Thread {
             System.out.println("Server connection could not be established.");
         }
     }
-
+    // Method to set up a BufferedReader to take in user input
     public void run() {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-
             while (true) {
                 String userInput = in.readLine();
                 System.out.println(userInput);
